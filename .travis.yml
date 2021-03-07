@@ -1,0 +1,60 @@
+language: c++
+
+env:
+  global:
+  - CMAKE_BUILD_TYPE=Release
+matrix:
+  include:
+  - os: osx
+    osx_image: xcode12.2
+    env:
+      - CC=gcc-10
+      - CXX=g++-10
+    before_install:
+    - pip install conan
+    - conan profile new default --detect
+    - conan profile update settings.compiler=gcc default
+    - conan profile update settings.compiler.version=10 default
+    - conan profile update settings.compiler.libcxx=libstdc++ default
+  - os: windows
+    env:
+      - PATH=/c/Python38:/c/Python38/Scripts:$PATH
+      - MSBUILD_PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin"
+    before_install:
+    - export CMAKE_GENERATOR="Visual Studio 16 2019"
+    - unset CXX
+    - unset CC
+    - choco install visualstudio2019buildtools --version 16.9.0.0 --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+    - choco install visualstudio2019community
+    - choco install python --version 3.8.0
+    - python -m pip install --upgrade pip
+    - python -m pip install conan
+    - conan profile new default --detect
+    - conan profile update settings.arch=x86 default
+    - conan profile update settings.compiler.runtime=MT default
+  - os: linux
+    dist: focal
+    env:
+      - CC=gcc-10
+      - CXX=g++-10
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - binutils
+        - g++-10
+        - gcc-10
+    before_install:
+    - sudo pip install cmake conan
+    - conan profile new default --detect
+    - conan profile update settings.compiler.libcxx=libstdc++11 default
+
+script:
+  - mkdir build
+  - cd build
+  - if [ -f ../conanfile.txt ]; then conan install .. --build=missing; fi
+  - cmake --version
+  - cmake .. -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
+  - cmake --build . -v --config $CMAKE_BUILD_TYPE
+  - cmake --target package .
