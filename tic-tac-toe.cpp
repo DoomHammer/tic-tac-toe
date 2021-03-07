@@ -61,7 +61,9 @@ public:
             if (diagonal_win) { return player; }
         }
 
-        if (any_of(board_ | views::join, equal_to(Player::None))) { return {}; }
+        for (const auto &row : board_) {
+            if (any_of(row, equal_to(Player::None))) { return {}; }
+        }
 
         return Player::None;
     }
