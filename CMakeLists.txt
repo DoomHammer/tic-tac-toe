@@ -9,3 +9,12 @@ if (CCACHE_PROGRAM)
 endif ()
 
 add_subdirectory(src)
+
+# Testing
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    include(CTest)
+    if(BUILD_TESTING)
+        add_subdirectory(test)
+    endif()
+endif()
