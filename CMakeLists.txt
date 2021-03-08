@@ -4,6 +4,9 @@ project(tic-tac-toe
         VERSION 0.0.1
         LANGUAGES CXX)
 
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
+
+
 find_program(CCACHE_PROGRAM ccache)
 if (CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")

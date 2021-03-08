@@ -1,41 +1,57 @@
 #include "tic-tac-toe/tic-tac-toe.h"
 
-#include <cassert>
+#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do
+// this in one cpp file
+#include <catch2/catch.hpp>
 
-#ifdef NDEBUG
-#undef NDEBUG
-#include <cassert>
-#define NDEBUG
-#endif
-
-int main() {
+TEST_CASE("when the game starts there is no winner") {
     auto game = TicTacToe{};
-    assert(!game.winner());
-    assert(game.current_player() == Player::O);
+    REQUIRE_FALSE(game.winner());
+}
 
+TEST_CASE("O is the first player") {
+    auto game = TicTacToe{};
+    REQUIRE(Player::O == game.current_player());
+}
+
+TEST_CASE("game continues after first move") {
+    auto game = TicTacToe{};
     game.mark(0, 0);
     // O
     //
     //
-    assert(!game.winner());
-    assert(game.current_player() == Player::X);
+    REQUIRE_FALSE(game.winner());
+}
+
+TEST_CASE("players take turns") {
+    auto game = TicTacToe{};
+    game.mark(0, 0);
+    // O
+    //
+    //
+    REQUIRE(Player::X  == game.current_player());
 
     game.mark(1, 0);
     // O
     // X
     //
-    assert(game.current_player() == Player::O);
+    REQUIRE(Player::O == game.current_player());
+}
 
+TEST_CASE("game ends when a player completes a row") {
+    auto game = TicTacToe{};
+    game.mark(0, 0);
+    game.mark(1, 0);
     game.mark(0, 1);
     game.mark(1, 1);
     // O O
     // X X
     //
-    assert(!game.winner());
+    CHECK_FALSE(game.winner());
 
     game.mark(0, 2);
     // O O O
     // X X
     //
-    assert(game.winner() == Player::O);
+    REQUIRE(Player::O  == game.winner());
 }
