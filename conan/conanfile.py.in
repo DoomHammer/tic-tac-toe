@@ -1,0 +1,43 @@
+import os
+
+from conans import ConanFile, tools
+from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
+
+class TicTacToeConan(ConanFile):
+    name = "@PROJECT_NAME@"
+    version = "@PROJECT_VERSION@"
+    license = "MIT"
+    author = "Authors"
+    homepage = "https://example.com"
+    url = "https://github.com/Etaruka/tic-tac-toe"
+    description = "Library and app for the Tic Tac Toe game"
+    topics = ("tic-tac-toe", "game", "multiplayer")
+    settings = "os", "arch", "compiler", "build_type"
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = {"shared": False, "fPIC": True}
+    keep_imports = True  # useful for repackaging, e.g. of licenses
+    build_policy = "missing"
+    requires = "catch2/2.13.4"
+
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
+
+    def build(self):
+        cmake = CMake(self)
+        cmake.configure(source_folder="@PROJECT_SOURCE_DIR@")
+        cmake.build()
+
+    def package_info(self):
+        self.cpp_info.libs = ["tic-tac-toe"]
+
+    def package(self):
+        cmake = CMake(self)
+        cmake.configure(source_folder="@PROJECT_SOURCE_DIR@")
+        cmake.install()
+
+        # fixup LICENSE
+        tools.rmdir(os.path.join(self.package_folder, "share"))
+        self.copy("LICENSE", dst="licenses", src="@PROJECT_SOURCE_DIR@")

@@ -56,7 +56,7 @@ install(EXPORT ${PROJECT_NAME}Targets
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ # last slash is important here
         DESTINATION include)
 
-## Install the license and readme files
+## Install the license file
 install(
         FILES ${PROJECT_SOURCE_DIR}/LICENSE
         DESTINATION ${CMAKE_INSTALL_DOCDIR})
