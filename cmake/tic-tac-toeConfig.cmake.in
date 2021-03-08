@@ -1,0 +1,7 @@
+# include(CMakeFindDependencyMacro)
+# find_dependency(dependency version)
+
+if(NOT TARGET @PROJECT_NAME@::tic-tac-toe
+    OR NOT TARGET @PROJECT_NAME@::tic-tac-toe-app)
+  include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+endif()
