@@ -17,11 +17,11 @@ set_target_properties(tic-tac-toe-app PROPERTIES
 target_compile_features(tic-tac-toe-app PRIVATE cxx_std_11)
 target_link_libraries(tic-tac-toe-app PRIVATE tic-tac-toe)
 
+
 # Installation support
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
-
 
 ## Create a Config file
 configure_package_config_file(
@@ -60,3 +60,22 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ # last slash is important here
 install(
         FILES ${PROJECT_SOURCE_DIR}/LICENSE
         DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
+
+# Packaging support
+
+set(CPACK_PACKAGE_VENDOR "Authors")
+set(CPACK_PACKAGE_CONTACT "author@example.com")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+        "Library and app for the tic-tac-toe game")
+
+find_program(DPKG_PROGRAM dpkg)
+if (DPKG_PROGRAM)
+    list(APPEND CPACK_GENERATOR DEB)
+    set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+    # if needed: set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}" ...)
+endif ()
+
+set(CPACK_SOURCE_IGNORE_FILES /.git /dist /.*build.* /\\\\.DS_Store)
+
+include(CPack)
