@@ -12,7 +12,6 @@ mkShell {
     cmake
     gcc
     libtool
-    lsb-release
     pkg-config
     pre-commit
     python3
